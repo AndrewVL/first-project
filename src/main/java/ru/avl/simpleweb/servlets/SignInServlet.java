@@ -1,20 +1,24 @@
 package ru.avl.simpleweb.servlets;
 
-import com.google.gson.Gson;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import ru.avl.simpleweb.accounts.AccountService;
 import ru.avl.simpleweb.accounts.UserProfile;
+import ru.avl.simpleweb.db.datasets.UsersDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by Andrey on 08.04.2017.
  */
 public class SignInServlet extends HttpServlet {
 
+    private static final Logger logger = Log.getLogger(SignInServlet.class);
     private final AccountService accountService;
 
     public SignInServlet(AccountService accountService) {
@@ -30,17 +34,21 @@ public class SignInServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        UserProfile userProfile = accountService.getUser(login, password);
-        if (userProfile == null) {
+        UsersDataSet usersData = null;
+        try {
+            usersData = accountService.getUser(login, password);
+        } catch (SQLException e) {
+            logger.warn(e);
             resp.setContentType("text/html;charset=utf-8");
             resp.getWriter().println("Unauthorized");
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        accountService.signInUser(req.getSession().getId(), userProfile);
+        accountService.signInUser(req.getSession().getId(),
+                new UserProfile(usersData.getLogin(),usersData.getPassword(), "defaultemail@gmail.com"));
 //        Gson gson = new Gson();
-//        String json = gson.toJson(userProfile);
+//        String json = gson.toJson(usersData);
 //        resp.getWriter().println(json);
         resp.setContentType("text/html;charset=utf-8");
         resp.getWriter().println("Authorized: " + login);

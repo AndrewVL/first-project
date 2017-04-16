@@ -1,0 +1,22 @@
+04-15 13:32:37 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Table "USERS" not found; SQL statement:
+select * from users where login='andrey' and password='vasilejjj' [42102-187]
+04-15 13:32:44 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Table "USERS" not found; SQL statement:
+insert into users (login, password) values ('andrey', 'vasilejjj') [42102-187]
+04-15 13:32:52 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Table "USERS" not found; SQL statement:
+select * from users where login='andrey' and password='vasilejjj' [42102-187]
+04-15 13:32:53 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Table "USERS" not found; SQL statement:
+select * from users where login='andrey' and password='vasilejjj' [42102-187]
+04-15 13:32:54 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Table "USERS" not found; SQL statement:
+select * from users where login='andrey' and password='vasilejjj' [42102-187]
+04-15 13:32:54 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Table "USERS" not found; SQL statement:
+select * from users where login='andrey' and password='vasilejjj' [42102-187]
+04-15 13:36:17 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: No data is available [2000-187]
+04-15 13:41:30 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: No data is available [2000-187]
