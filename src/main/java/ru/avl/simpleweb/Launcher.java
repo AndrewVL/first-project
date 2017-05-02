@@ -1,14 +1,21 @@
 package ru.avl.simpleweb;
 
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
+import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import ru.avl.simpleweb.accounts.AccountService;
+import ru.avl.simpleweb.chat.ChatService;
 import ru.avl.simpleweb.servlets.MirrorRequestServlet;
 import ru.avl.simpleweb.servlets.SignInServlet;
 import ru.avl.simpleweb.servlets.SignUpServlet;
+import ru.avl.simpleweb.servlets.WebSocketChatServlet;
 
 /**
  * Created by Andrey on 01.04.2017.
@@ -27,8 +34,18 @@ public class Launcher {
         context.addServlet(new ServletHolder(mirrorServlet), "/mirror");
         context.addServlet(new ServletHolder(signUpServlet), "/signup");
         context.addServlet(new ServletHolder(signInServlet), "/signin");
+        context.addServlet(new ServletHolder(new WebSocketChatServlet()), "/chat");
+
+//        ResourceHandler resourceHandler = new ResourceHandler();
+//        resourceHandler.setDirectoriesListed(true);
+//        resourceHandler.setResourceBase("pages");
+//
+//        HandlerList handlerList = new HandlerList();
+//        handlerList.setHandlers(new Handler[]{resourceHandler, context});
+
 
         Server server = new Server(8080);
+//        server.setHandler(handlerList);
         server.setHandler(context);
 
         server.start();
