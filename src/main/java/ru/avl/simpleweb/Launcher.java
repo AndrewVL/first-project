@@ -1,21 +1,20 @@
 package ru.avl.simpleweb;
 
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
-import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
-import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import ru.avl.simpleweb.accounts.AccountService;
-import ru.avl.simpleweb.chat.ChatService;
-import ru.avl.simpleweb.servlets.MirrorRequestServlet;
-import ru.avl.simpleweb.servlets.SignInServlet;
-import ru.avl.simpleweb.servlets.SignUpServlet;
-import ru.avl.simpleweb.servlets.WebSocketChatServlet;
+import ru.avl.simpleweb.accserver.AccountServer;
+import ru.avl.simpleweb.accserver.AccountServerController;
+import ru.avl.simpleweb.accserver.AccountServerControllerMBean;
+import ru.avl.simpleweb.accserver.AccountServerImpl;
+import ru.avl.simpleweb.servlets.*;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 
 /**
  * Created by Andrey on 01.04.2017.
@@ -26,26 +25,26 @@ public class Launcher {
 
     public static void main(String[] args) throws Exception {
         MirrorRequestServlet mirrorServlet = new MirrorRequestServlet();
+
         AccountService accountService = new AccountService();
         SignUpServlet signUpServlet = new SignUpServlet(accountService);
         SignInServlet signInServlet = new SignInServlet(accountService);
+
+        AccountServer accountServer = new AccountServerImpl(10);
+        AccServerServlet accServerServlet = new AccServerServlet(accountServer);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(mirrorServlet), "/mirror");
         context.addServlet(new ServletHolder(signUpServlet), "/signup");
         context.addServlet(new ServletHolder(signInServlet), "/signin");
         context.addServlet(new ServletHolder(new WebSocketChatServlet()), "/chat");
+        context.addServlet(new ServletHolder(accServerServlet), "/admin");
 
-//        ResourceHandler resourceHandler = new ResourceHandler();
-//        resourceHandler.setDirectoriesListed(true);
-//        resourceHandler.setResourceBase("pages");
-//
-//        HandlerList handlerList = new HandlerList();
-//        handlerList.setHandlers(new Handler[]{resourceHandler, context});
-
+        AccountServerControllerMBean mBean = new AccountServerController(accountServer);
+        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        mBeanServer.registerMBean(mBean, new ObjectName("Admin:type=AccountServerController.usersLimit"));
 
         Server server = new Server(8080);
-//        server.setHandler(handlerList);
         server.setHandler(context);
 
         server.start();
