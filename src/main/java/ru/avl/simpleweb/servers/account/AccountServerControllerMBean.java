@@ -1,4 +1,4 @@
-package ru.avl.simpleweb.accserver;
+package ru.avl.simpleweb.servers.account;
 
 /**
  * Created by Andrey on 02.05.2017.

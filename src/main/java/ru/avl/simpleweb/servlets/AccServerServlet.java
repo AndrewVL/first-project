@@ -1,6 +1,6 @@
 package ru.avl.simpleweb.servlets;
 
-import ru.avl.simpleweb.accserver.AccountServer;
+import ru.avl.simpleweb.servers.account.AccountServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
