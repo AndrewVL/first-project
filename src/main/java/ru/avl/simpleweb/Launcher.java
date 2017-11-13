@@ -53,7 +53,6 @@ public class Launcher {
 
         Server server = new Server(8080);
         server.setHandler(context);
-
         server.start();
         logger.info("Server started");
         server.join();
